@@ -10,11 +10,10 @@ namespace NeuralNetwork
         public double[] weight;
         public double nodeWeight;
         public static Random rand = new Random(14);
-        public Node(double[] weight, double nodeWeight)
-        {
-            this.weight = weight;
-            this.nodeWeight = nodeWeight;
-        }
+        /// <summary>
+        /// Copy node
+        /// </summary>
+        /// <param name="nw">Old node</param>
         public Node(Node nw)
         {
             nodeWeight = nw.nodeWeight;
@@ -24,6 +23,12 @@ namespace NeuralNetwork
                 weight[i]=nw.weight[i];
             }
         }
+        /// <summary>
+        /// Basic constructor
+        /// </summary>
+        /// <param name="numberOfConnections">
+        /// Number of inputs
+        /// </param>
         public Node(int numberOfConnections)
         {
             weight = new double[numberOfConnections];
@@ -33,6 +38,15 @@ namespace NeuralNetwork
             }
             nodeWeight = (rand.NextDouble() - 0.5)*2.0;
         }
+        /// <summary>
+        /// Returns value calculated based on the inputs and weights
+        /// </summary>
+        /// <param name="numbers">
+        /// Inputs
+        /// </param>
+        /// <returns>
+        /// Single value
+        /// </returns>
         public double getValue(List<double> numbers)
         {
             double value = 0;
@@ -42,6 +56,12 @@ namespace NeuralNetwork
             }
             return value * (nodeWeight / (double) numbers.Count);
         }
+        /// <summary>
+        /// Add numbers to the weights
+        /// </summary>
+        /// <param name="numbers">
+        /// Array of numbers to add
+        /// </param>
         public void addToWeights(double[] numbers)
         {
             for (int i = 0; i < numbers.Length; i++)
@@ -49,41 +69,49 @@ namespace NeuralNetwork
                 weight[i] = Math.Max(-1,Math.Min(1, weight[i] + numbers[i]));
             }
         }
-        public double[] generateRandomNums(double multiplaer)
+
+        /// <summary>
+        /// Generate array of random numbers with size of the node inputs
+        /// </summary>
+        /// <param name="multiplier">
+        /// 0-1 multiplier of the random
+        /// </param>
+        /// <returns>
+        /// Array of random numbers
+        /// </returns>
+        public double[] generateRandomNums(double multiplier)
         {
             double[] random = new double[weight.Length];
             for (int i = 0; i < weight.Length; i++)
             {
-                random[i]=(rand.NextDouble() - 0.5) * 2 * multiplaer;
+                random[i]=(rand.NextDouble() - 0.5) * 2 * multiplier;
             }
             return random;
         }
-        public void addRandomNums(double multiplaer)
+
+        /// <summary>
+        /// Add random to all nodes
+        /// </summary>
+        /// <param name="multiplier">
+        /// 0-1 multiplier of the random
+        /// </param>
+        public void addRandomNums(double multiplier)
         {
             double[] random = new double[weight.Length];
             for (int i = 0; i < weight.Length; i++)
             {
-                random[i]=(rand.NextDouble() - 0.5) * 4 * multiplaer;
+                random[i]=(rand.NextDouble() - 0.5) * 4 * multiplier;
             }
-            nodeWeight=Math.Max(-1, Math.Min(1, nodeWeight + ((rand.NextDouble() - 0.5) *4* multiplaer)));
+            nodeWeight=Math.Max(-1, Math.Min(1, nodeWeight + ((rand.NextDouble() - 0.5) *4* multiplier)));
             addToWeights(random);
         }
-        public override string ToString()
-        {
-            string value = "\"weight\":"+ nodeWeight+ ",\n\"weights\":[";
-            for (int i = 0; i < weight.Length; i++)
-            {
-                if (i != 0)
-                {
-                    value += ",";
-                }
-                value += "{\"id_" + i + "\":" + weight[i] + "}";
-            }
-            value += "]";
-            return value;
 
-        }
-
+        /// <summary>
+        /// Set random to random part of the networks nodes
+        /// </summary>
+        /// <param name="v">
+        /// 0-1 sets how big part of the networks nodes will be set to random
+        /// </param>
         internal void setRandomNums(double v)
         {
             List<int> numbers = new List<int>();
@@ -101,6 +129,15 @@ namespace NeuralNetwork
             nodeWeight = Math.Max(-1, Math.Min(1, nodeWeight + ((rand.NextDouble() - 0.5) * v)));
         }
 
+        /// <summary>
+        /// Add random to random part of the networks nodes
+        /// </summary>
+        /// <param name="numberToAddTo">
+        /// 0-1 sets how big part of the networks nodes will be changed
+        /// </param>
+        /// <param name="multiplier">
+        /// 0-1 multiplier of the random
+        /// </param>
         internal void addRandomToRandom(double numberToAddTo,double multiplier)
         {
             List<int> numbers = new List<int>();

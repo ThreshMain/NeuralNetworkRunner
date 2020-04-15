@@ -36,9 +36,8 @@ namespace NeuralNetwork
         {
             movementSpeed = speed;
             done = false;
-            maxRotate = movementSpeed / 700;
+            maxRotate = movementSpeed / 900;
         }
-
         void Start()
         {
             rb = GetComponent<Rigidbody>();

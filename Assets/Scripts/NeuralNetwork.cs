@@ -8,14 +8,13 @@ namespace NeuralNetwork
     public class NeuralNetwork:IComparable<NeuralNetwork>
     {
         public Node finalNode;
-        public int id;
         public List<ListWrapper> layer = new List<ListWrapper>();
+        public int id;
         public double score;
-        public NeuralNetwork(Node final, List<ListWrapper> layers)
-        {
-            finalNode=final;
-            layer = layers;
-        }
+        /// <summary>
+        /// Constructor for Neural network that copy data from old
+        /// </summary>
+        /// <param name="nw">Old network</param>
         public NeuralNetwork(NeuralNetwork nw)
         {
             this.score = nw.score;
@@ -29,6 +28,11 @@ namespace NeuralNetwork
                 }
             }
         }
+        /// <summary>
+        /// Basic constructor for random network
+        /// </summary>
+        /// <param name="numberOfLayers">Number of layers</param>
+        /// <param name="numberOfInputs">Number of inputs</param>
         public NeuralNetwork(int numberOfLayers,int numberOfInputs)
         {
             finalNode = new Node(numberOfInputs);
@@ -41,11 +45,26 @@ namespace NeuralNetwork
                 }
             }
         }
+        /// <summary>
+        /// Getting the resoult for array of inputs
+        /// </summary>
+        /// <param name="numbers">
+        /// Inputs that are passed to the network
+        /// </param>
+        /// <returns>
+        /// Double resoult that is based on the inputs
+        /// </returns>
         public double resoult(List<double> numbers)
         {
             return resoultLayer(numbers, 0);
         }
-        public double resoultLayer(List<double> numbers,int layerNumber)
+        /// <summary>
+        /// Internal method returns resoult of each layer
+        /// </summary>
+        /// <param name="numbers">Inputs</param>
+        /// <param name="layerNumber">Layer number</param>
+        /// <returns>Double resoult</returns>
+        private double resoultLayer(List<double> numbers,int layerNumber)
         {
             if (layerNumber <= layer.Count - 1)
             {
@@ -61,30 +80,13 @@ namespace NeuralNetwork
                 return finalNode.getValue(numbers);
             }
         }
-        public override string ToString()
-        {
-            string value = "{\"Main\":{" + finalNode.ToString() + "},\n\"Layers\":[";
-            for(int i = 0; i < layer.Count; i++)
-            {
-                if (i != 0)
-                {
-                    value += ",";
-                }
-                value += "{ \"LayerNumber\":" + i + ",\n\"Nodes\":[\n";
-                for(int o = 0; o < layer[i].list.Count; o++)
-                {
-                    if (o != 0)
-                    {
-                        value += ",\n";
-                    }
-                    value += "{\n" + layer[i].list[o].ToString() + "\n}";
-                }
-                value += "]}\n";
-            }
-            return value + "]}";
-        }
-
-        internal void setRandomToWeights(double v)
+        /// <summary>
+        /// Set random to random part of the networks nodes
+        /// </summary>
+        /// <param name="v">
+        /// 0-1 sets how big part of the networks nodes will be set to random
+        /// </param>
+        public void setRandomToWeights(double v)
         {
             for (int i = 0; i < layer.Count; i++)
             {
@@ -95,31 +97,43 @@ namespace NeuralNetwork
             }
             finalNode.setRandomNums(v);
         }
-
-        public void addRadnomToWeights(double multiplaer)
+        /// <summary>
+        /// Add random to all nodes
+        /// </summary>
+        /// <param name="multiplier">
+        /// 0-1 multiplier of the random
+        /// </param>
+        public void addRadnomToWeights(double multiplier)
         {
             for (int i = 0; i < layer.Count; i++)
             {
                 for (int o = 0; o < layer[i].list.Count; o++)
                 {
-                    layer[i].list[o].addRandomNums(multiplaer);
+                    layer[i].list[o].addRandomNums(multiplier);
                 }
             }
-            finalNode.addRandomNums(multiplaer);
+            finalNode.addRandomNums(multiplier);
         }
-
-        internal void addRadnomToRandomWeights(double numberToAddTo, double mulplier)
+        /// <summary>
+        /// Add random to random part of the networks nodes
+        /// </summary>
+        /// <param name="numberToAddTo">
+        /// 0-1 sets how big part of the networks nodes will be changed
+        /// </param>
+        /// <param name="multiplier">
+        /// 0-1 multiplier of the random
+        /// </param>
+        internal void addRadnomToRandomWeights(double numberToAddTo, double multiplier)
         {
             for (int i = 0; i < layer.Count; i++)
             {
                 for (int o = 0; o < layer[i].list.Count; o++)
                 {
-                    layer[i].list[o].addRandomToRandom(numberToAddTo, mulplier);
+                    layer[i].list[o].addRandomToRandom(numberToAddTo, multiplier);
                 }
             }
-            finalNode.addRandomToRandom(numberToAddTo, mulplier);
+            finalNode.addRandomToRandom(numberToAddTo, multiplier);
         }
-
         public int CompareTo(NeuralNetwork other)
         {
             return other.score.CompareTo(this.score);

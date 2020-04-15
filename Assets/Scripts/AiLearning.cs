@@ -10,9 +10,16 @@ namespace NeuralNetwork
         List<NeuralNetwork> old = null;
         public List<NeuralNetwork> networks = new List<NeuralNetwork>();
         public int numberOfNetworks,numberOfLayers, numberOfInputs;
-        public AiLearning(int numberOfSteps, int numberOfLayers, int numberOfInputs)
+        public double avgScroreGrow, bestScoreGrow;
+        /// <summary>
+        /// Default constructor for AiLearning with random generated Networks
+        /// </summary>
+        /// <param name="numberOfNetworks">Number of networks (Players)</param>
+        /// <param name="numberOfLayers">Number of layers for each network</param>
+        /// <param name="numberOfInputs">Number of Inputs for each layer of each network</param>
+        public AiLearning(int numberOfNetworks, int numberOfLayers, int numberOfInputs)
         {
-            numberOfNetworks = numberOfSteps;
+            this.numberOfNetworks = numberOfNetworks;
             this.numberOfLayers = numberOfLayers;
             this.numberOfInputs = numberOfInputs;
             for (int i = 0; i < numberOfNetworks; i++)
@@ -21,6 +28,11 @@ namespace NeuralNetwork
                 networks[i].id = i;
             }
         }
+        /// <summary>
+        /// Default learn method for my AI
+        /// </summary>
+        /// <param name="newOnes">Number of totaly new Random generated networks</param>
+        /// <param name="copiesOfTheBest">Number of copyes of the network with best score</param>
         public void learn(int newOnes, int copiesOfTheBest)
         {
             if (old == null)
@@ -48,19 +60,23 @@ namespace NeuralNetwork
                 networks[i].id = i;
             }
 
-            double saveAvg = 0, nowAvg = 0, oldAvg = 0;
+            double avgScroreGrow = 0;
             for (int i = 0; i < old.Count; i++)
             {
-                saveAvg += save[i].score;
-                nowAvg += networks[i].score;
-                oldAvg += old[i].score;
+                avgScroreGrow += save[i].score-old[i].score;
             }
-            //Debug.Log(numberTakesFromOld + ", s-" + saveAvg / (double)old.Count + ", n-" + nowAvg / (double)old.Count + ", o-" + oldAvg / (double)old.Count);
-
+            avgScroreGrow /= save.Count;
             networks.Sort();
             double best = networks[0].score;
-            //Debug.Log(best );
 
+            bestScoreGrow = 0;
+            for (int i = 0; i < old.Count; i++)
+            {
+                if (old[i].id == networks[0].id)
+                {
+                    bestScoreGrow = networks[0].score - old[i].score;
+                }
+            }
             for (int i = 1; i < numberOfNetworks; i++)
             {
                 if (i + newOnes + copiesOfTheBest < numberOfNetworks)
@@ -90,24 +106,6 @@ namespace NeuralNetwork
                 n.score = 0;
             }
             old = save;
-        }
-        public override string ToString()
-        {
-            string value = "{\"networks\":[";
-            for (int i = 0; i < networks.Count; i++)
-            {
-                if (i != 0)
-                {
-                    value += ",";
-                }
-                value += "{\"network_" + i + "\":" + networks[i].ToString() + "}";
-            }
-            value += "]}";
-            return value;
-        }
-        public string Save()
-        {
-            return "Pojebano si dostal";
         }
     }
 }

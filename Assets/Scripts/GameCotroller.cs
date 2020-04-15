@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,26 +11,22 @@ namespace NeuralNetwork
     {
         public GameObject player;
         public GameObject reference;
-        public int newOnes=5, copyOfBest=10,cameraHight = 520, countOfDummys = 50;
-        public float playerSpeed = 150.0f;
-        public double rotationEffect = 100;
-        public bool camFolow = true,advanced = false;
         public GameObject lineGeneratorPrefab;
+        public Settings setting;
 
         private List<GameObject> pathsOfTheBest=new List<GameObject>();
         private int numberToKeep = 20;
 
-        float startSpeed;
-        string progressFile = "Neural.json";
-        string scoreFile = "scores.csv";
-        string settingsFile = "settings.conf";
+        string progressFile = "Exports\\Neural.json";
+        string scoreFile = "Exports\\scores.csv";
+        string settingsFile = "Exports\\settings.conf";
         int numberOfFinished = 0;
         int generationNumber = 0;
         double bestScrore = 0;
         double avgScoreIG = 0;
         float speedSliderValue = 1;
         float cameraSliderValue = 1;
-        bool mute=false;
+        int indexOfTheBest = 0;
 
         AiLearning ai;
         Material redMaterial;
@@ -37,27 +35,123 @@ namespace NeuralNetwork
         List<GameObject> players = new List<GameObject>();
         AudioSource loop;
 
-        private void FixedUpdate()
+        /// <summary>
+        /// Called once at the start of the game
+        /// </summary>
+        void Start()
         {
-            players.Sort((a,b)=> b.GetComponent<PlayerMovement>().CompareTo(a.GetComponent<PlayerMovement>()));
-            bestScrore=players[0].GetComponent<PlayerMovement>().devidedScore;
-            //avgScoreIG = 0;
-            //for (int i = 0; i < players.Count; i++)
-            //{
-            //    avgScoreIG += players[i].GetComponent<PlayerMovement>().devidedScore;
-            //}
-            //avgScoreIG = avgScoreIG / players.Count;
-            avgScoreIG = players[0].GetComponent<PlayerMovement>().devidedScore;
-            if (camFolow)
+            loadSettingsAndAi();
+            File.WriteAllText(scoreFile, "BestScrore, AvgScore, AvgScoreGrow, BestScoreGrow, Best rotated, AvgRotated");
+            cam = GameObject.FindObjectOfType<Camera>().GetComponent<CameraFolow>();
+            redMaterial = (Material)Resources.Load("RedDummy", typeof(Material));
+            normalMaterial = (Material)Resources.Load("Dummy", typeof(Material));
+            #region Music
+            AudioSource[] audios = GameObject.FindObjectsOfType<AudioSource>();
+            AudioSource start = null;
+            for (int i = 0; i < audios.Length; i++)
             {
-                cam.move(players[0].transform.position + new Vector3(0, cameraHight*cameraSliderValue, 0));
+                if (audios[i].name == "Start")
+                {
+                    start = audios[i];
+                }
+                if (audios[i].name == "loop")
+                {
+                    loop = audios[i];
+                }
             }
-            if (bestScrore > 10)
+            start.Play(0);
+            loop.PlayDelayed(start.clip.length - 1);
+            #endregion
+        }
+        /// <summary>
+        /// Load settings then load Ai
+        /// </summary>
+        async void loadSettingsAndAi()
+        {
+            await loadSettings();
+            await loadAi();
+        }
+        /// <summary>
+        /// Loads progress from file with all networks
+        /// </summary>
+        async Task loadAi()
+        {
+            if (File.Exists(progressFile))
             {
-                SkinnedMeshRenderer render = players[0].GetComponentInChildren<SkinnedMeshRenderer>();
-                render.sharedMaterial = redMaterial;
+                using (StreamReader reader = new StreamReader(progressFile))
+                {
+                    ai = JsonUtility.FromJson<AiLearning>(await reader.ReadToEndAsync());
+                    if (ai.numberOfNetworks == setting.countOfDummys) {
+                        Debug.Log("Loaded process");
+                    }
+                    else
+                    {
+                        ai = new AiLearning(setting.countOfDummys, 1, 5);
+                        Debug.Log("Wrong number of networks");
+                    }
+                }
+            }
+            else
+            {
+                ai = new AiLearning(setting.countOfDummys, 1, 5);
+            }
+            for (int i = 0; i < setting.countOfDummys; i++)
+            {
+                players.Add(GameObject.Instantiate(player, reference.transform.position, reference.transform.rotation));
+                players[i].name = "Clone-" + i;
+            }
+            sendDataAndStart();
+        }
+        /// <summary>
+        /// Loads settigns from file if file exist,otherwise writes current settings (default) to the file
+        /// </summary>
+        async Task loadSettings()
+        {
+            if (File.Exists(settingsFile))
+            {
+                using (StreamReader reader = new StreamReader(settingsFile))
+                {
+                    setting = JsonUtility.FromJson<Settings>(await reader.ReadToEndAsync());
+                }
+                File.WriteAllText(settingsFile, JsonUtility.ToJson(setting));
+                setting.startSpeed = setting.playerSpeed;
+            }
+            else
+            {
+                File.WriteAllText(settingsFile, JsonUtility.ToJson(setting));
             }
         }
+        /// <summary>
+        /// Called each 1/n of settings based on project settings
+        /// </summary>
+        private void FixedUpdate()
+        {
+            if (ai != null)
+            {
+                indexOfTheBest = 0;
+                for (int i = 0; i < players.Count; i++)
+                {
+                    if (players[i].GetComponent<PlayerMovement>().devidedScore > players[indexOfTheBest].GetComponent<PlayerMovement>().devidedScore)
+                    {
+                        indexOfTheBest = i;
+                    }
+                }
+                bestScrore = players[indexOfTheBest].GetComponent<PlayerMovement>().devidedScore;
+                if (setting.camFolow)
+                {
+                    cam.move(players[indexOfTheBest].transform.position + new Vector3(0, setting.cameraHight * cameraSliderValue, 0));
+                }
+                if (players[indexOfTheBest].GetComponent<PlayerMovement>().devidedScore > 10)
+                {
+                    SkinnedMeshRenderer render = players[indexOfTheBest].GetComponentInChildren<SkinnedMeshRenderer>();
+                    render.sharedMaterial = redMaterial;
+                }
+            }
+        }
+        /// <summary>
+        /// Spawn visual continuos line created from list of Vector3
+        /// </summary>
+        /// <param name="linePoints"></param>
         private void SpawnLines(Vector3[] linePoints)
         {
             LineRenderer lRend;
@@ -77,23 +171,18 @@ namespace NeuralNetwork
             lRend.SetPositions(linePoints);
             pathsOfTheBest.Add(currentPath);
         }
-        public static void log(string s)
-        {
-            Debug.Log(s);
-        }
+        /// <summary>
+        /// Called by each player after he finish (Hit wall)
+        /// </summary>
         public void finish()
         {
             numberOfFinished++;
-            if (numberOfFinished == countOfDummys-1)
+            // When all player already finished
+            if (numberOfFinished == setting.countOfDummys-1)
             {
                 numberOfFinished = 0;
-                SpawnLines(players[0].GetComponent<PlayerMovement>().path.ToArray());
-                ai.learn(newOnes, copyOfBest);
-                if (generationNumber % 50 == 0)
-                {
-                    saveNetwork();
-                }
-                generationNumber++;
+
+                // Calculate data for analytics
                 double avgScore = 0;
                 double avgRotated = 0;
                 for (int i = 0; i < players.Count; i++)
@@ -103,10 +192,42 @@ namespace NeuralNetwork
                     avgRotated += players[i].GetComponent<PlayerMovement>().rotated;
                 }
                 avgRotated /= (double)players.Count;
-                apendToFile(bestScrore + "," + avgScore / players.Count + "," + players[0].GetComponent<PlayerMovement>().rotated + "," + avgRotated, scoreFile);
-                sendDataAndStart();
+                avgScore /= (double)players.Count;
+
+                // Draw lines for the best one
+                SpawnLines(players[indexOfTheBest].GetComponent<PlayerMovement>().path.ToArray());
+
+                // Start ai learning
+                ai.learn(setting.newOnes, setting.copyOfBest);
+
+                // Each 50th cycle save progress
+                if (generationNumber % 50 == 0 && generationNumber>0)
+                {
+                    saveNetwork();
+                }
+                generationNumber++;
+
+                if (avgScore == 0)
+                {
+                    Debug.LogError("Some thing went wrong");
+                    startNewGen();
+                }
+                else
+                {
+                    apendToFile(bestScrore + "," + avgScore + "," +ai.avgScroreGrow+ "," + ai.avgScroreGrow+ "," + players[indexOfTheBest].GetComponent<PlayerMovement>().rotated + "," + avgRotated, scoreFile);
+                    sendDataAndStart();
+                }
             }
         }
+        /// <summary>
+        /// Simple method to append to file
+        /// </summary>
+        /// <param name="s">
+        /// String to append to file
+        /// </param>
+        /// <param name="path">
+        /// Path to the file
+        /// </param>
         public void apendToFile(string s, string path)
         {
             using (StreamWriter sw = File.AppendText(path))
@@ -114,88 +235,32 @@ namespace NeuralNetwork
                 sw.WriteLine(s);
             }
         }
+        /// <summary>
+        /// Initializate all player and start theyir movement
+        /// </summary>
         public void sendDataAndStart()
         {
-            for (int i = 0; i < countOfDummys; i++)
+            for (int i = 0; i < players.Count; i++)
             {
-                players[i].GetComponent<PlayerMovement>().dataIn(ai.networks[i], reference.transform.position, reference.transform.rotation,playerSpeed/startSpeed,rotationEffect*100);
+                players[i].GetComponent<PlayerMovement>().dataIn(ai.networks[i], reference.transform.position, reference.transform.rotation,setting.playerSpeed/setting.startSpeed, setting.rotationEffect);
             }
-            for (int i = 0; i < countOfDummys; i++)
+            for (int i = 0; i < players.Count; i++)
             {
-                players[i].GetComponent<PlayerMovement>().startMoving(playerSpeed);
+                players[i].GetComponent<PlayerMovement>().startMoving(setting.playerSpeed);
             }
         }
-
-        void Start()
+        /// <summary>
+        /// Force start of new genration from user or system when error is found
+        /// </summary>
+        public void startNewGen()
         {
-            File.Delete(progressFile);
-            File.Delete(settingsFile);
-            File.Delete(scoreFile);
-            startSpeed = playerSpeed;
-            cam = GameObject.FindObjectOfType<Camera>().GetComponent<CameraFolow>();
-            redMaterial = (Material)Resources.Load("RedDummy", typeof(Material));
-            normalMaterial = (Material)Resources.Load("Dummy", typeof(Material));
-            ai = new AiLearning(countOfDummys, 1, 5);
-            for (int i = 0; i < countOfDummys; i++)
-            {
-                    players.Add(GameObject.Instantiate(player, reference.transform.position, reference.transform.rotation));
-                players[i].name = "Clone-" + i;
-            }
+            generationNumber++;
+            numberOfFinished = 0;
             sendDataAndStart();
-            #region Music
-            AudioSource[] audios = GameObject.FindObjectsOfType<AudioSource>();
-            AudioSource start=null;
-            for (int i = 0; i < audios.Length; i++)
-            {
-                if (audios[i].name == "Start")
-                {
-                    start = audios[i];
-                }
-                if (audios[i].name == "loop")
-                {
-                    loop = audios[i];
-                }
-            }
-            start.Play(0);
-            loop.PlayDelayed(start.clip.length - 1);
-            #endregion
-            apendToFile(JsonUtility.ToJson(this), settingsFile);
         }
-        public void start()
-        {
-            loadSettings();
-            loadAi();
-        }
-        async void loadSettings()
-        {
-            if (File.Exists(settingsFile))
-            {
-                using (StreamReader reader = new StreamReader(settingsFile))
-                {
-                    //JsonUtility.ToJson(this)
-                   this.joinSettings(JsonUtility.FromJson<GameCotroller>(await reader.ReadToEndAsync()));
-                }
-            }
-        }
-        void joinSettings(GameCotroller settings)
-        {
-            newOnes = settings.newOnes;
-            copyOfBest = settings.copyOfBest;
-            cameraHight = settings.cameraHight;
-            countOfDummys = settings.countOfDummys;
-            playerSpeed = settings.playerSpeed;
-            rotationEffect = settings.rotationEffect;
-        }
-        async void loadAi()
-        {
-            if (File.Exists(progressFile))
-            {
-                using (StreamReader reader = new StreamReader(progressFile))
-                {
-                    ai = JsonUtility.FromJson<AiLearning>(await reader.ReadToEndAsync());
-                }
-            }
-        }
+        /// <summary>
+        /// Saves progress to file with all networks
+        /// </summary>
         void saveNetwork()
         {
             using (StreamWriter outputFile = new StreamWriter(progressFile))
@@ -211,19 +276,17 @@ namespace NeuralNetwork
             }
             if (GUI.Button(new Rect(10, 90, 100, 30),"NextGen."))
             {
-                generationNumber++;
-                numberOfFinished = 0;
-                sendDataAndStart();
+                startNewGen();
             }
             GUI.Label(new Rect(10, 150, 400, 80), generationNumber + ".GEN");
             GUI.Label(new Rect(250, 10, 400, 80), bestScrore + ".BEST LAST");
             GUI.Label(new Rect(250, 50, 400, 80), avgScoreIG + ".Avg");
             speedSliderValue = GUI.HorizontalSlider(new Rect(10, 10, 100, 20), speedSliderValue, 0.1f, 1);
             cameraSliderValue = GUI.HorizontalSlider(new Rect(10, 30, 100, 20), cameraSliderValue, 0.1f, 1);
-            playerSpeed = startSpeed * speedSliderValue;
-            camFolow = GUI.Toggle(new Rect(10, 125, 100, 30), camFolow, "Cam folow");
-            mute = GUI.Toggle(new Rect(10, 180, 100, 30), mute, "Sound mute");
-            loop.mute = mute;
+            setting.playerSpeed = setting.startSpeed * speedSliderValue;
+            setting.camFolow = GUI.Toggle(new Rect(10, 125, 100, 30), setting.camFolow, "Cam folow");
+            setting.mute = GUI.Toggle(new Rect(10, 180, 100, 30), setting.mute, "Sound mute");
+            loop.mute = setting.mute;
         }
     }
 }
