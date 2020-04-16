@@ -23,7 +23,7 @@ namespace NeuralNetwork
         int numberOfFinished = 0;
         int generationNumber = 0;
         double bestScrore = 0;
-        double avgScoreIG = 0;
+        double avgScore = 0;
         float speedSliderValue = 1;
         float cameraSliderValue = 1;
         int indexOfTheBest = 0;
@@ -129,13 +129,16 @@ namespace NeuralNetwork
             if (ai != null)
             {
                 indexOfTheBest = 0;
+                avgScore = 0;
                 for (int i = 0; i < players.Count; i++)
                 {
+                    avgScore += players[i].GetComponent<PlayerMovement>().devidedScore;
                     if (players[i].GetComponent<PlayerMovement>().devidedScore > players[indexOfTheBest].GetComponent<PlayerMovement>().devidedScore)
                     {
                         indexOfTheBest = i;
                     }
                 }
+                avgScore /= (double) players.Count;
                 bestScrore = players[indexOfTheBest].GetComponent<PlayerMovement>().devidedScore;
                 if (setting.camFolow)
                 {
@@ -280,7 +283,7 @@ namespace NeuralNetwork
             }
             GUI.Label(new Rect(10, 150, 400, 80), generationNumber + ".GEN");
             GUI.Label(new Rect(250, 10, 400, 80), bestScrore + ".BEST LAST");
-            GUI.Label(new Rect(250, 50, 400, 80), avgScoreIG + ".Avg");
+            GUI.Label(new Rect(250, 50, 400, 80), avgScore + ".Avg");
             speedSliderValue = GUI.HorizontalSlider(new Rect(10, 10, 100, 20), speedSliderValue, 0.1f, 1);
             cameraSliderValue = GUI.HorizontalSlider(new Rect(10, 30, 100, 20), cameraSliderValue, 0.1f, 1);
             setting.playerSpeed = setting.startSpeed * speedSliderValue;
@@ -288,5 +291,7 @@ namespace NeuralNetwork
             setting.mute = GUI.Toggle(new Rect(10, 180, 100, 30), setting.mute, "Sound mute");
             loop.mute = setting.mute;
         }
+
+
     }
 }

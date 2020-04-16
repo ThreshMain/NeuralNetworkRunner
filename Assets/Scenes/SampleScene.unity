@@ -15369,6 +15369,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Capsule
       objectReference: {fileID: 0}
+    - target: {fileID: 4709585959150508586, guid: 47fcc376ce1ba074387015a5a454a3fa,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4709585959150508598, guid: 47fcc376ce1ba074387015a5a454a3fa,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -15536,17 +15541,22 @@ PrefabInstance:
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.countOfDummys
-      value: 200
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.copyOfBest
-      value: 75
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.newOnes
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
+        type: 3}
+      propertyPath: setting.advanced
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c49b8bad8ffedb14d8d5badbdd3aab0e, type: 3}

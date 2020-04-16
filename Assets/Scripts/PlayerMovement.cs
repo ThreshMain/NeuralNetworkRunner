@@ -29,6 +29,7 @@ namespace NeuralNetwork
             transform.rotation = rotation;
             current = nn;
             score = 1;
+            devidedScore = 1;
             rotated = 1;
             path = new List<Vector3>();
         }
@@ -86,7 +87,7 @@ namespace NeuralNetwork
                 transform.Rotate(0, Convert.ToSingle(moveHorizontal), 0);
                 rb.velocity = (movement * movementSpeed);
                 Vector3 linePoint = this.transform.position;
-                linePoint.y += 10;
+                linePoint.y += 2;
                 path.Add(linePoint);
                 devidedScore = score;// /rotated
                 current.score = devidedScore;

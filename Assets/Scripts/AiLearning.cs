@@ -60,15 +60,14 @@ namespace NeuralNetwork
                 networks[i].id = i;
             }
 
-            double avgScroreGrow = 0;
+            avgScroreGrow = 0;
             for (int i = 0; i < old.Count; i++)
             {
                 avgScroreGrow += save[i].score-old[i].score;
             }
-            avgScroreGrow /= save.Count;
+            avgScroreGrow /= (double) save.Count;
             networks.Sort();
             double best = networks[0].score;
-
             bestScoreGrow = 0;
             for (int i = 0; i < old.Count; i++)
             {
@@ -81,7 +80,8 @@ namespace NeuralNetwork
             {
                 if (i + newOnes + copiesOfTheBest < numberOfNetworks)
                 {
-                    networks[i].addRadnomToRandomWeights(0.5,0.05*(i/ numberOfNetworks));
+                    // zde si muze kazdy hrat s pomery jen by meli zustat mezi 0-1
+                    networks[i].addRadnomToRandomWeights(0.5,0.5*(i/ numberOfNetworks));
                 }
                 else
                 {
@@ -96,7 +96,8 @@ namespace NeuralNetwork
                         int idSave = networks[i].id;
                         networks[i] = new NeuralNetwork(networks[0]);
                         networks[i].id = idSave;
-                        networks[i].addRadnomToWeights(0.015);
+                        // zde si muze kazdy hrat s pomery jen by meli zustat mezi 0-1
+                        networks[i].addRadnomToRandomWeights(0.5, 0.015);
                     }
                 }
             }
