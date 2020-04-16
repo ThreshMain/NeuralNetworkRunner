@@ -4987,7 +4987,7 @@ PrefabInstance:
     - target: {fileID: 3213565830085597968, guid: 287a7ce619fc81d49a8a2a941820a63d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.1480026
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3213565830085597968, guid: 287a7ce619fc81d49a8a2a941820a63d,
         type: 3}
@@ -6728,7 +6728,7 @@ Transform:
   m_GameObject: {fileID: 945759258}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.5, y: 1, z: 2.5}
+  m_LocalScale: {x: 2.8, y: 1, z: 2.8}
   m_Children:
   - {fileID: 201552542}
   - {fileID: 248825310}
@@ -15377,7 +15377,7 @@ PrefabInstance:
     - target: {fileID: 4709585959150508598, guid: 47fcc376ce1ba074387015a5a454a3fa,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4040
+      value: 4540
       objectReference: {fileID: 0}
     - target: {fileID: 4709585959150508598, guid: 47fcc376ce1ba074387015a5a454a3fa,
         type: 3}
@@ -15387,7 +15387,7 @@ PrefabInstance:
     - target: {fileID: 4709585959150508598, guid: 47fcc376ce1ba074387015a5a454a3fa,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1252
+      value: 1394
       objectReference: {fileID: 0}
     - target: {fileID: 4709585959150508598, guid: 47fcc376ce1ba074387015a5a454a3fa,
         type: 3}
@@ -15536,7 +15536,7 @@ PrefabInstance:
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.playerSpeed
-      value: 500
+      value: 450
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
@@ -15557,6 +15557,16 @@ PrefabInstance:
         type: 3}
       propertyPath: setting.advanced
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
+        type: 3}
+      propertyPath: setting.numberOfLayers
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
+        type: 3}
+      propertyPath: setting.port
+      value: 5455
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c49b8bad8ffedb14d8d5badbdd3aab0e, type: 3}

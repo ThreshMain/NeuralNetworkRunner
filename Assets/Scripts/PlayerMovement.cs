@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace NeuralNetwork
 {
@@ -37,7 +35,7 @@ namespace NeuralNetwork
         {
             movementSpeed = speed;
             done = false;
-            maxRotate = movementSpeed / 900;
+            maxRotate = movementSpeed / 700;
         }
         void Start()
         {
@@ -100,6 +98,7 @@ namespace NeuralNetwork
             {
                 if (!done)
                 {
+                    current.dead = new Vector2(this.transform.position.x, this.transform.position.z);
                     GameObject.FindGameObjectWithTag("Ground").GetComponent<GameCotroller>().finish();
                     movementSpeed = 0;
                     current.score = devidedScore;

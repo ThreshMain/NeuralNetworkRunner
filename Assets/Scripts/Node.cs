@@ -9,7 +9,7 @@ namespace NeuralNetwork
     {
         public double[] weight;
         public double nodeWeight;
-        public static Random rand = new Random(14);
+        public static Random rand = new Random();
         /// <summary>
         /// Copy node
         /// </summary>

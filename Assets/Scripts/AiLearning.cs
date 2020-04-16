@@ -7,10 +7,9 @@ namespace NeuralNetwork
     [Serializable]
     public class AiLearning
     {
-        List<NeuralNetwork> old = null;
+        public List<NeuralNetwork> old = null;
         public List<NeuralNetwork> networks = new List<NeuralNetwork>();
         public int numberOfNetworks,numberOfLayers, numberOfInputs;
-        public double avgScroreGrow, bestScoreGrow;
         /// <summary>
         /// Default constructor for AiLearning with random generated Networks
         /// </summary>
@@ -60,22 +59,9 @@ namespace NeuralNetwork
                 networks[i].id = i;
             }
 
-            avgScroreGrow = 0;
-            for (int i = 0; i < old.Count; i++)
-            {
-                avgScroreGrow += save[i].score-old[i].score;
-            }
-            avgScroreGrow /= (double) save.Count;
+           
             networks.Sort();
             double best = networks[0].score;
-            bestScoreGrow = 0;
-            for (int i = 0; i < old.Count; i++)
-            {
-                if (old[i].id == networks[0].id)
-                {
-                    bestScoreGrow = networks[0].score - old[i].score;
-                }
-            }
             for (int i = 1; i < numberOfNetworks; i++)
             {
                 if (i + newOnes + copiesOfTheBest < numberOfNetworks)

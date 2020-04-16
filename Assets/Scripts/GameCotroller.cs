@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Threading;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace NeuralNetwork
 {
@@ -18,16 +17,18 @@ namespace NeuralNetwork
         private int numberToKeep = 20;
 
         string progressFile = "Exports\\Neural.json";
-        string scoreFile = "Exports\\scores.csv";
         string settingsFile = "Exports\\settings.conf";
         int numberOfFinished = 0;
-        int generationNumber = 0;
         double bestScrore = 0;
         double avgScore = 0;
         float speedSliderValue = 1;
         float cameraSliderValue = 1;
         int indexOfTheBest = 0;
 
+
+        TcpClient _connection;
+        StreamWriter _connectionWriter=null;
+        StreamReader _connectionReader = null;
         AiLearning ai;
         Material redMaterial;
         Material normalMaterial;
@@ -41,7 +42,6 @@ namespace NeuralNetwork
         void Start()
         {
             loadSettingsAndAi();
-            File.WriteAllText(scoreFile, "BestScrore, AvgScore, AvgScoreGrow, BestScoreGrow, Best rotated, AvgRotated");
             cam = GameObject.FindObjectOfType<Camera>().GetComponent<CameraFolow>();
             redMaterial = (Material)Resources.Load("RedDummy", typeof(Material));
             normalMaterial = (Material)Resources.Load("Dummy", typeof(Material));
@@ -64,11 +64,23 @@ namespace NeuralNetwork
             #endregion
         }
         /// <summary>
+        /// On end of the program
+        /// </summary>
+        void OnTriggerExit()
+        {
+            _connection.Close();
+        }
+        /// <summary>
         /// Load settings then load Ai
         /// </summary>
         async void loadSettingsAndAi()
         {
             await loadSettings();
+            _connection = new TcpClient();
+            _connection.Connect(setting.server, setting.port);
+            Debug.Log(setting.server + ":" + setting.port);
+            _connectionWriter = new StreamWriter(_connection.GetStream());
+            _connectionReader = new StreamReader(_connection.GetStream());
             await loadAi();
         }
         /// <summary>
@@ -86,14 +98,14 @@ namespace NeuralNetwork
                     }
                     else
                     {
-                        ai = new AiLearning(setting.countOfDummys, 1, 5);
+                        ai = new AiLearning(setting.countOfDummys, setting.numberOfLayers, 5);
                         Debug.Log("Wrong number of networks");
                     }
                 }
             }
             else
             {
-                ai = new AiLearning(setting.countOfDummys, 1, 5);
+                ai = new AiLearning(setting.countOfDummys, setting.numberOfLayers, 5);
             }
             for (int i = 0; i < setting.countOfDummys; i++)
             {
@@ -118,6 +130,7 @@ namespace NeuralNetwork
             }
             else
             {
+                setting.sesionID = Node.rand.Next(0, 999999999);
                 File.WriteAllText(settingsFile, JsonUtility.ToJson(setting));
             }
         }
@@ -200,15 +213,31 @@ namespace NeuralNetwork
                 // Draw lines for the best one
                 SpawnLines(players[indexOfTheBest].GetComponent<PlayerMovement>().path.ToArray());
 
+                string insert = "INSERT INTO `PlayerData` (`SesionID`,`Clone_Number`,`Score`, `ScoreGrow`, `Dead_X`, `Dead_Y`, `Generation_number`) VALUES ";
+                if (ai.old!=null)
+                {
+                    for (int index = 0; index < ai.networks.Count; index++)
+                    {
+                        insert +=(string.Format("({0}, {1}, {2}, {3}, {4}, {5}, {6}),", setting.sesionID, index, ai.networks[index].score, ai.networks[index].score - ai.old[index].score, ai.networks[index].dead.x, ai.networks[index].dead.y, setting.generationNumber));
+                    }
+                    insert = insert.Remove(insert.Length - 1, 1) + ";";
+                    _connectionWriter.WriteLine(insert);
+                    _connectionWriter.Flush();
+                    if (_connectionReader.ReadLine().Trim() != ai.networks.Count.ToString())
+                    {
+                        Debug.Log("Some thing went wrong when inserting into DB");
+                    }
+                }
+               
                 // Start ai learning
                 ai.learn(setting.newOnes, setting.copyOfBest);
 
                 // Each 50th cycle save progress
-                if (generationNumber % 50 == 0 && generationNumber>0)
+                if (setting.generationNumber % 50 == 0 && setting.generationNumber > 0)
                 {
                     saveNetwork();
                 }
-                generationNumber++;
+                setting.generationNumber++;
 
                 if (avgScore == 0)
                 {
@@ -217,7 +246,6 @@ namespace NeuralNetwork
                 }
                 else
                 {
-                    apendToFile(bestScrore + "," + avgScore + "," +ai.avgScroreGrow+ "," + ai.avgScroreGrow+ "," + players[indexOfTheBest].GetComponent<PlayerMovement>().rotated + "," + avgRotated, scoreFile);
                     sendDataAndStart();
                 }
             }
@@ -257,7 +285,7 @@ namespace NeuralNetwork
         /// </summary>
         public void startNewGen()
         {
-            generationNumber++;
+            setting.generationNumber++;
             numberOfFinished = 0;
             sendDataAndStart();
         }
@@ -281,7 +309,7 @@ namespace NeuralNetwork
             {
                 startNewGen();
             }
-            GUI.Label(new Rect(10, 150, 400, 80), generationNumber + ".GEN");
+            GUI.Label(new Rect(10, 150, 400, 80), setting.generationNumber + ".GEN");
             GUI.Label(new Rect(250, 10, 400, 80), bestScrore + ".BEST LAST");
             GUI.Label(new Rect(250, 50, 400, 80), avgScore + ".Avg");
             speedSliderValue = GUI.HorizontalSlider(new Rect(10, 10, 100, 20), speedSliderValue, 0.1f, 1);

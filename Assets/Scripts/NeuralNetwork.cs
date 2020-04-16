@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace NeuralNetwork
 {
@@ -11,6 +12,7 @@ namespace NeuralNetwork
         public List<ListWrapper> layer = new List<ListWrapper>();
         public int id;
         public double score;
+        public Vector2 dead;
         /// <summary>
         /// Constructor for Neural network that copy data from old
         /// </summary>

@@ -22,6 +22,8 @@ ScriptsOnlyBuild:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
     - UnityEditor.TestTools.TestRunner.TestRun.TestJobDataHolder
+    com.unity.multiplayer-hlapi.Runtime.dll:
+    - UnityEngine.Networking.NetworkCallbacks
   sceneClasses:
     Assets/Scenes/SampleScene.unity:
     - Class: 1
@@ -67,11 +69,11 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11336}
+      Script: {instanceID: 11370}
     - Class: 114
-      Script: {instanceID: 12600}
+      Script: {instanceID: 12656}
     - Class: 114
-      Script: {instanceID: 13060}
+      Script: {instanceID: 13120}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 120
@@ -419,7 +421,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 8be5ddc45f16b66543f3a9e820f13344
+      Hash: a31fc618995078781d7663a13bd4b25b
     assemblyName: Assembly-CSharp.dll
     namespaceName: NeuralNetwork
     className: PlayerMovement
@@ -509,7 +511,7 @@ ScriptsOnlyBuild:
     className: AudioTrack
   - hash:
       serializedVersion: 2
-      Hash: 3910747aad4be795e87fd411a2294b70
+      Hash: 04eeba440a156af17f7ef8b76dc8e407
     assemblyName: Assembly-CSharp.dll
     namespaceName: NeuralNetwork
     className: GameCotroller
@@ -666,4 +668,4 @@ ScriptsOnlyBuild:
   platform: 24
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: C:/Data/Unity/Neural Network Runner/Builds/Linux_v2.0.0/Game.x86_64
+  playerPath: C:/Data/Unity/NeuralNetworkRunner/Builds/Linux_v3.0.0/Game.x86_64
