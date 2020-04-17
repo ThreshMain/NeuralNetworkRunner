@@ -36,27 +36,67 @@ namespace UnityMiMDatabaseConnect
             TcpClient client = (TcpClient)obj;
             StreamReader clientReader = new StreamReader(client.GetStream());
             StreamWriter clientWriter = new StreamWriter(client.GetStream());
-            
-            while (true&&client.Connected)
+            MySqlCommand cmd;
+            string frstMsg = clientReader.ReadLine();
+            if (frstMsg.Trim() != "Have Session")
             {
-                string text = clientReader.ReadLine();
-                Console.WriteLine("Running non Query: "+text);
-                if (text.Length > 6)
+                cmd = new MySqlCommand("SELECT max(id)+1 as id FROM NeuralNetwork.Session;", connection);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                String id = reader.GetString(0);
+                reader.Close();
+                cmd.Dispose();
+                cmd = new MySqlCommand("INSERT INTO Session VALUES (" + id + ");", connection);
+                if (cmd.ExecuteNonQuery() == 1)
                 {
-                    MySqlCommand cmd = new MySqlCommand(text, connection);
-                    clientWriter.WriteLine(cmd.ExecuteNonQuery());
+                    clientWriter.WriteLine(id);
                     clientWriter.Flush();
+                    while (true && client.Connected)
+                    {
+                        string text = "INSERT INTO `PlayerData` (`SesionID`,`Clone_Number`,`Score`, `ScoreGrow`, `Dead_X`, `Dead_Y`, `Generation_number`) VALUES " + clientReader.ReadLine();
+                        Console.WriteLine("Running non Query: " + text.Length);
+                        cmd = new MySqlCommand(text, connection);
+                        try
+                        {
+                            clientWriter.WriteLine(cmd.ExecuteNonQuery());
+                            clientWriter.Flush();
+                        }
+                        catch
+                        {
+                            client.Close();
+                            break;
+                        }
+                    }
                 }
                 else
                 {
-                    client.Close();
-                    break;
+                    Console.WriteLine("Some thing wen wrong when creating new session");
+                }
+                clientReader.Close();
+                clientWriter.Close();
+                client.Close();
+            }
+            else
+            {
+                while (true && client.Connected)
+                {
+                    string text = "INSERT INTO `PlayerData` (`SesionID`,`Clone_Number`,`Score`, `ScoreGrow`, `Dead_X`, `Dead_Y`, `Generation_number`) VALUES " + clientReader.ReadLine();
+                    Console.WriteLine("Running non Query: " + text.Length);
+
+                    cmd = new MySqlCommand(text, connection);
+                    try
+                    {
+                        clientWriter.WriteLine(cmd.ExecuteNonQuery());
+                        clientWriter.Flush();
+                    }
+                    catch
+                    {
+                        client.Close();
+                        break;
+                    }
                 }
             }
-            connection.Close();
-            clientReader.Close();
-            clientWriter.Close();
-            client.Close();
+
         }
     }
 }

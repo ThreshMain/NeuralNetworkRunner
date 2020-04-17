@@ -5,7 +5,7 @@ namespace NeuralNetwork
     [Serializable]
     public class Settings
     {
-        public int newOnes = 10, copyOfBest = 50, cameraHight = 520, countOfDummys = 100,numberOfLayers=1;
+        public int newOnes = 10, copyOfBest = 75, cameraHight = 520, countOfDummys = 200,numberOfLayers=1;
         public float playerSpeed = 500.0f;
         [NonSerialized()] public float startSpeed = 500.0f;
         public double rotationEffect = 100;
@@ -13,6 +13,6 @@ namespace NeuralNetwork
         public string server = "84.242.120.206";
         public int port = 5455;
         public int generationNumber = 0;
-        public int sesionID;
+        public int sesionID=-1;
     }
 }

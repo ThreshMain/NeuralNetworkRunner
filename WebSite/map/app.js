@@ -53,7 +53,11 @@ function keyDown(event) {
     case 38:
       if (intervalScaleDown == null) {
         intervalScaleDown = setInterval(() => {
-          map.scale = map.scale > 0.1 ? map.scale - 0.1 : map.scale;
+          if (map.scale > 0.5) {
+            map.scale -= 0.1;
+            map.x -= canvas.width * 0.05;
+            map.y -= canvas.height * 0.05;
+          }
         }, 1);
       }
       break;
@@ -61,6 +65,8 @@ function keyDown(event) {
       if (intervalScaleUp == null) {
         intervalScaleUp = setInterval(() => {
           map.scale += 0.1;
+          map.x += canvas.width * 0.05;
+          map.y += canvas.height * 0.05;
         }, 1);
       }
       break;
@@ -88,9 +94,14 @@ function draw() {
   ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = "#FFF";
   for (let i = 0; i < points.length; i++) {
-    ctx.fillRect((points[i].x + map.x) / map.scale, (points[i].y + map.y) / map.scale, 3, 3);
+    if (points[i].best) {
+      ctx.fillStyle = "#0F0";
+      ctx.fillRect((points[i].x + map.x) / map.scale, (points[i].y + map.y) / map.scale, 3, 3);
+    } else {
+      ctx.fillStyle = "#FFF";
+      ctx.fillRect((points[i].x + map.x) / map.scale, (points[i].y + map.y) / map.scale, 1, 1);
+    }
   }
   ctx.stroke();
   requestAnimationFrame(draw);

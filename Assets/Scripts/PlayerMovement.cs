@@ -35,7 +35,7 @@ namespace NeuralNetwork
         {
             movementSpeed = speed;
             done = false;
-            maxRotate = movementSpeed / 700;
+            maxRotate = movementSpeed / 500;
         }
         void Start()
         {

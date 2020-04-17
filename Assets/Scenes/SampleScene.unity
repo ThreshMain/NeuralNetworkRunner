@@ -15536,17 +15536,17 @@ PrefabInstance:
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.playerSpeed
-      value: 450
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.countOfDummys
-      value: 250
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.copyOfBest
-      value: 100
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
@@ -15556,7 +15556,7 @@ PrefabInstance:
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.advanced
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
@@ -15568,5 +15568,16 @@ PrefabInstance:
       propertyPath: setting.port
       value: 5455
       objectReference: {fileID: 0}
+    - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
+        type: 3}
+      propertyPath: setting.sesionID
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
+        type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 4579337908281743680, guid: 327f64eded5724948b58e017aea6662e,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c49b8bad8ffedb14d8d5badbdd3aab0e, type: 3}

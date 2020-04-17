@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -17,8 +18,8 @@ namespace NeuralNetwork
         private int numberToKeep = 20;
 
         string exportFolder = "Exports";
-        string progressFile = "Exports"+ Path.PathSeparator + "Neural.json";
-        string settingsFile = "Exports"+ Path.PathSeparator + "settings.conf";
+        string progressFile = "Exports"+ Path.DirectorySeparatorChar + "Neural.json";
+        string settingsFile = "Exports"+ Path.DirectorySeparatorChar + "settings.conf";
         int numberOfFinished = 0;
         double bestScrore = 0;
         double avgScore = 0;
@@ -86,6 +87,26 @@ namespace NeuralNetwork
             Debug.Log(setting.server + ":" + setting.port);
             _connectionWriter = new StreamWriter(_connection.GetStream());
             _connectionReader = new StreamReader(_connection.GetStream());
+            Debug.Log(setting.sesionID);
+            if (setting.sesionID == -1)
+            {
+                _connectionWriter.WriteLine("Give me coookie");
+                _connectionWriter.Flush();
+                if(Int32.TryParse(_connectionReader.ReadLine().Trim(), out setting.sesionID))
+                {
+                    Debug.Log("Sessiong id:"+setting.sesionID);
+                }
+                else
+                {
+                    Debug.LogError("Some thing went wrong while parsing Sessiong ID");
+                }
+            }
+            else
+            {
+                _connectionWriter.WriteLine("Have Session");
+                _connectionWriter.Flush();
+            }
+            File.WriteAllText(settingsFile, JsonUtility.ToJson(setting));
             await loadAi();
         }
         /// <summary>
@@ -126,6 +147,7 @@ namespace NeuralNetwork
         {
             if (File.Exists(settingsFile))
             {
+                Debug.Log("Readign settings");
                 using (StreamReader reader = new StreamReader(settingsFile))
                 {
                     setting = JsonUtility.FromJson<Settings>(await reader.ReadToEndAsync());
@@ -135,8 +157,8 @@ namespace NeuralNetwork
             }
             else
             {
-                setting.sesionID = Node.rand.Next(0, 999999999);
-                File.WriteAllText(settingsFile, JsonUtility.ToJson(setting));
+                Debug.Log("Settings doesnt exists");
+                setting.sesionID = -1;
             }
         }
         /// <summary>
@@ -218,7 +240,7 @@ namespace NeuralNetwork
                 // Draw lines for the best one
                 SpawnLines(players[indexOfTheBest].GetComponent<PlayerMovement>().path.ToArray());
 
-                string insert = "INSERT INTO `PlayerData` (`SesionID`,`Clone_Number`,`Score`, `ScoreGrow`, `Dead_X`, `Dead_Y`, `Generation_number`) VALUES ";
+                string insert = "";
                 if (ai.old!=null)
                 {
                     for (int index = 0; index < ai.networks.Count; index++)
