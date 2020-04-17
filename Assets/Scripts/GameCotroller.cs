@@ -16,8 +16,9 @@ namespace NeuralNetwork
         private List<GameObject> pathsOfTheBest=new List<GameObject>();
         private int numberToKeep = 20;
 
-        string progressFile = "Exports\\Neural.json";
-        string settingsFile = "Exports\\settings.conf";
+        string exportFolder = "Exports";
+        string progressFile = "Exports"+ Path.PathSeparator + "Neural.json";
+        string settingsFile = "Exports"+ Path.PathSeparator + "settings.conf";
         int numberOfFinished = 0;
         double bestScrore = 0;
         double avgScore = 0;
@@ -41,6 +42,10 @@ namespace NeuralNetwork
         /// </summary>
         void Start()
         {
+            if (!Directory.Exists(exportFolder))
+            {
+                Directory.CreateDirectory("Exports");
+            }
             loadSettingsAndAi();
             cam = GameObject.FindObjectOfType<Camera>().GetComponent<CameraFolow>();
             redMaterial = (Material)Resources.Load("RedDummy", typeof(Material));

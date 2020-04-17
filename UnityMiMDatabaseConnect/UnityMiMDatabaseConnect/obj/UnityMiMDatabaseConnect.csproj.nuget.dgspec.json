@@ -1,0 +1,66 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Data\\Unity\\NeuralNetworkRunner\\UnityMiMDatabaseConnect\\UnityMiMDatabaseConnect\\UnityMiMDatabaseConnect.csproj": {}
+  },
+  "projects": {
+    "C:\\Data\\Unity\\NeuralNetworkRunner\\UnityMiMDatabaseConnect\\UnityMiMDatabaseConnect\\UnityMiMDatabaseConnect.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Data\\Unity\\NeuralNetworkRunner\\UnityMiMDatabaseConnect\\UnityMiMDatabaseConnect\\UnityMiMDatabaseConnect.csproj",
+        "projectName": "UnityMiMDatabaseConnect",
+        "projectPath": "C:\\Data\\Unity\\NeuralNetworkRunner\\UnityMiMDatabaseConnect\\UnityMiMDatabaseConnect\\UnityMiMDatabaseConnect.csproj",
+        "packagesPath": "C:\\Users\\marti\\.nuget\\packages\\",
+        "outputPath": "C:\\Data\\Unity\\NeuralNetworkRunner\\UnityMiMDatabaseConnect\\UnityMiMDatabaseConnect\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\marti\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.0.19, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
