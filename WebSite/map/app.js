@@ -115,8 +115,8 @@ function scroll(event) {
   if (map.scale < map.minScale) {
     map.scale = map.minScale;
   } else {
-    map.x += cursor.x * 0.5 * changeScroll;
-    map.y += cursor.y * 0.5 * changeScroll;
+    map.x += cursor.x * changeScroll;
+    map.y += cursor.y * changeScroll;
   }
 }
 resize();
