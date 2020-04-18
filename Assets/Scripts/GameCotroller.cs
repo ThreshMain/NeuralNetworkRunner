@@ -26,12 +26,13 @@ namespace NeuralNetwork
         float speedSliderValue = 1;
         float cameraSliderValue = 1;
         int indexOfTheBest = 0;
+        bool loaded = false;
 
 
         TcpClient _connection;
         StreamWriter _connectionWriter=null;
         StreamReader _connectionReader = null;
-        AiLearning ai;
+        public AiLearning ai;
         Material redMaterial;
         Material normalMaterial;
         CameraFolow cam;
@@ -108,6 +109,7 @@ namespace NeuralNetwork
             }
             File.WriteAllText(settingsFile, JsonUtility.ToJson(setting));
             await loadAi();
+            loaded = true;
         }
         /// <summary>
         /// Loads progress from file with all networks
@@ -166,9 +168,8 @@ namespace NeuralNetwork
         /// </summary>
         private void FixedUpdate()
         {
-            if (ai != null)
+            if (loaded)
             {
-                indexOfTheBest = 0;
                 avgScore = 0;
                 for (int i = 0; i < players.Count; i++)
                 {

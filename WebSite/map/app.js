@@ -11,6 +11,7 @@ let map = {
   x: 0,
   y: 0,
   scale: 10,
+  minScale: 0.5,
 };
 let intervalScaleDown;
 let intervalScaleUp;
@@ -53,10 +54,10 @@ function keyDown(event) {
     case 38:
       if (intervalScaleDown == null) {
         intervalScaleDown = setInterval(() => {
-          if (map.scale > 0.5) {
+          if (map.scale > map.minScale) {
             map.scale -= 0.1;
-            map.x -= canvas.width * 0.05;
-            map.y -= canvas.height * 0.05;
+            map.x -= cursor.x * 0.05;
+            map.y -= cursor.y * 0.05;
           }
         }, 1);
       }
@@ -65,8 +66,8 @@ function keyDown(event) {
       if (intervalScaleUp == null) {
         intervalScaleUp = setInterval(() => {
           map.scale += 0.1;
-          map.x += canvas.width * 0.05;
-          map.y += canvas.height * 0.05;
+          map.x += cursor.x * 0.05;
+          map.y += cursor.y * 0.05;
         }, 1);
       }
       break;
@@ -105,6 +106,18 @@ function draw() {
   }
   ctx.stroke();
   requestAnimationFrame(draw);
+}
+
+document.addEventListener("wheel", scroll);
+function scroll(event) {
+  let changeScroll = (event.deltaX + event.deltaY) / 100;
+  map.scale += changeScroll;
+  if (map.scale < map.minScale) {
+    map.scale = map.minScale;
+  } else {
+    map.x += cursor.x * 0.5 * changeScroll;
+    map.y += cursor.y * 0.5 * changeScroll;
+  }
 }
 resize();
 draw();
