@@ -7,13 +7,14 @@
     <title>Document</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css" />
+    <script type="text/javascript" src="DataTables/datatables.min.js"></script>
 </head>
 
 <body>
     <?php
     $bestTable = "BestData";
+    $avgTable = "AvgData";
     $conn = mysqli_connect("127.0.0.1", "UnityUser", "BKunjm3uCqjdBQpL", "NeuralNetwork", "5456");
     if (isset($_GET["SesionID"])) {
         if (isset($_GET["Table"])) {
@@ -52,11 +53,13 @@
     $htmltable .=   "</table>"   . $endLine;
     echo $htmltable;
     $conn->close();
-    $best = false;
     if ($_GET["Table"] == $bestTable) {
-        $best = true;
+        echo "<a href=\"../map/index.php?SesionID=" . $_GET["SesionID"] . "&best=1\">Map of Best Dead points</a>";
+    } elseif ($_GET["Table"] == $avgTable) {
+        echo "<a href=\"../map/index.php?SesionID=" . $_GET["SesionID"] . "&best=0\">Map of all Dead points</a>";
+    } else {
+        echo "<a href=\"../map/index.php?SesionID=" . $_GET["SesionID"] . "\">Map of all with best points</a>";
     }
-    echo "<a href=\"../map/index.php?SesionID=" . $_GET["SesionID"] . "&best" . $best . "\">Map of Dead points</a>";
     ?>
     <script>
         $(document).ready(function() {
