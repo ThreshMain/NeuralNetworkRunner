@@ -34,9 +34,9 @@ namespace NeuralNetwork
             weight = new double[numberOfConnections];
             for(int i = 0; i < numberOfConnections; i++)
             {
-                weight[i]=rand.NextDouble()-0.5 * 2.0;
+                weight[i]=rand.NextDouble()-0.5 * 4;
             }
-            nodeWeight = (rand.NextDouble() - 0.5)*2.0;
+            nodeWeight = (rand.NextDouble() - 0.5) * 4;
         }
         /// <summary>
         /// Returns value calculated based on the inputs and weights
@@ -66,7 +66,7 @@ namespace NeuralNetwork
         {
             for (int i = 0; i < numbers.Length; i++)
             {
-                weight[i] = Math.Max(-1,Math.Min(1, weight[i] + numbers[i]));
+                weight[i] = Math.Max(-2,Math.Min(2, weight[i] + numbers[i]));
             }
         }
 
@@ -84,7 +84,7 @@ namespace NeuralNetwork
             double[] random = new double[weight.Length];
             for (int i = 0; i < weight.Length; i++)
             {
-                random[i]=(rand.NextDouble() - 0.5) * 2 * multiplier;
+                random[i]=(rand.NextDouble() - 0.5) * 4 * multiplier;
             }
             return random;
         }
@@ -102,7 +102,7 @@ namespace NeuralNetwork
             {
                 random[i]=(rand.NextDouble() - 0.5) * 4 * multiplier;
             }
-            nodeWeight=Math.Max(-1, Math.Min(1, nodeWeight + ((rand.NextDouble() - 0.5) *4* multiplier)));
+            nodeWeight=Math.Max(-2, Math.Min(2, nodeWeight + ((rand.NextDouble() - 0.5) * 4 * multiplier)));
             addToWeights(random);
         }
 
@@ -124,9 +124,9 @@ namespace NeuralNetwork
                 int randomIndex = (int) rand.NextDouble() * numbers.Count;
                 int number=numbers[randomIndex];
                 numbers.RemoveAt(randomIndex);
-                weight[number] = (rand.NextDouble() - 0.5) * 2;
+                weight[number] = (rand.NextDouble() - 0.5) * 4;
             }
-            nodeWeight = Math.Max(-1, Math.Min(1, nodeWeight + ((rand.NextDouble() - 0.5) * v)));
+            nodeWeight = Math.Max(-2, Math.Min(2, nodeWeight + ((rand.NextDouble() - 0.5) * 4 * v)));
         }
 
         /// <summary>
@@ -150,9 +150,9 @@ namespace NeuralNetwork
                 int randomIndex = (int)rand.NextDouble() * numbers.Count;
                 int number = numbers[randomIndex];
                 numbers.RemoveAt(randomIndex);
-                weight[number] = Math.Max(-1, Math.Min(1, weight[number] + (rand.NextDouble() - 0.5) * multiplier*2));
+                weight[number] = Math.Max(-2, Math.Min(2, weight[number] + (rand.NextDouble() - 0.5) * multiplier*4));
             }
-            nodeWeight = Math.Max(-1, Math.Min(1, nodeWeight + ((rand.NextDouble() - 0.5) * 2)));
+            nodeWeight = Math.Max(-2, Math.Min(2, nodeWeight + ((rand.NextDouble() - 0.5) * 4)));
         }
     }
 }

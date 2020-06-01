@@ -49,6 +49,14 @@ MonoBehaviour:
   rotationEffect: 360
   rotated: 1
   done: 1
+  current:
+    finalNode:
+      weight: []
+      nodeWeight: 0
+    layer: []
+    id: 0
+    score: 0
+    dead: {x: 0, y: 0}
   path: []
 --- !u!1001 &4579337908281712216
 PrefabInstance:
@@ -364,6 +372,18 @@ PrefabInstance:
     - target: {fileID: 400120, guid: 5917c0e93d180a842b61d1ebc62a195c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400120, guid: 5917c0e93d180a842b61d1ebc62a195c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 400120, guid: 5917c0e93d180a842b61d1ebc62a195c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 400120, guid: 5917c0e93d180a842b61d1ebc62a195c, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 400122, guid: 5917c0e93d180a842b61d1ebc62a195c, type: 3}
       propertyPath: m_LocalPosition.y

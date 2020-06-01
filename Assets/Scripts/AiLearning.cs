@@ -67,7 +67,7 @@ namespace NeuralNetwork
                 if (i + newOnes + copiesOfTheBest < numberOfNetworks)
                 {
                     // zde si muze kazdy hrat s pomery jen by meli zustat mezi 0-1
-                    networks[i].addRadnomToRandomWeights(0.5,0.5*(i/ numberOfNetworks));
+                    networks[i].addRadnomToRandomWeights(0.5,0.5/((float) this.numberOfLayers)*(i/ numberOfNetworks));
                 }
                 else
                 {
@@ -83,7 +83,7 @@ namespace NeuralNetwork
                         networks[i] = new NeuralNetwork(networks[0]);
                         networks[i].id = idSave;
                         // zde si muze kazdy hrat s pomery jen by meli zustat mezi 0-1
-                        networks[i].addRadnomToRandomWeights(0.5, 0.015);
+                        networks[i].addRadnomToRandomWeights(0.5, 0.015/ ((float)this.numberOfLayers));
                     }
                 }
             }

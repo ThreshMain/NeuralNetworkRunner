@@ -15536,22 +15536,22 @@ PrefabInstance:
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.playerSpeed
-      value: 750
+      value: 1500
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.countOfDummys
-      value: 100
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.copyOfBest
-      value: 50
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.newOnes
-      value: 10
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
@@ -15561,7 +15561,7 @@ PrefabInstance:
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
       propertyPath: setting.numberOfLayers
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 9216851215533282716, guid: c49b8bad8ffedb14d8d5badbdd3aab0e,
         type: 3}
